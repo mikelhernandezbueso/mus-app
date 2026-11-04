@@ -1,7 +1,7 @@
 import { ALL_LESSONS, UNITS } from '../content/units';
 import { go } from '../router';
 import { useStore } from '../state/store';
-import { currentStreak, dueReviews, levelInfo } from '../state/progress';
+import { currentStreak, dueReviews, levelInfo, todayXp } from '../state/progress';
 import { StatChips } from '../ui/Chrome';
 
 export function isUnlocked(lessonsDone: Record<string, unknown>, index: number) {
@@ -14,6 +14,8 @@ export function Learn() {
   const firstOpen = ALL_LESSONS.find((x) => !progress.lessons[x.lesson.id]);
   const due = dueReviews(progress).length;
   const doneCount = Object.keys(progress.lessons).length;
+  const today = todayXp(progress);
+  const goal = progress.settings.dailyGoal;
   return (
     <div className="screen">
       <div className="topbar">
@@ -33,6 +35,15 @@ export function Learn() {
         </div>
         <div className="small" style={{ marginTop: 6, opacity: 0.9 }}>
           {lv.into}/{lv.need} XP para el siguiente nivel · {doneCount}/{ALL_LESSONS.length} lecciones
+        </div>
+        <div className="goal" aria-label={`Objetivo de hoy: ${today} de ${goal} XP`}>
+          <span aria-hidden>{today >= goal ? '✅' : '🎯'}</span>
+          <div className="grow">
+            <div className="small" style={{ fontWeight: 800 }}>
+              {today >= goal ? '¡Objetivo de hoy cumplido!' : `Objetivo de hoy: ${today}/${goal} XP`}
+            </div>
+            <div className="xpbar xpbar--goal"><div style={{ width: `${Math.min(100, (today / goal) * 100)}%` }} /></div>
+          </div>
         </div>
         <div className="row" style={{ marginTop: 12, gap: 8 }}>
           {firstOpen && (

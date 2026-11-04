@@ -404,6 +404,7 @@ export const UNITS: Unit[] = [
         steps: [
           { t: 'teach', title: 'Corta con algo bueno', body: 'Se corta el mus con:\n• **Duples** o **medias** altas.\n• **La 31** (sobre todo de mano).\n• **Dos reyes y juego**, o buena chica con pares de ases.\n\nCon una mano floja, pide mus: cambiar no cuesta nada.' },
           ...q('cortar31', 'cortarduples'),
+          ex('musOrCut', 4),
           ex('discardReyes', 1),
           ex('discardPares', 1),
         ],

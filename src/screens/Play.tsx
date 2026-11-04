@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   advanceGame, applyAction, currentActor, LANCE_TITLE, newGame, randomSeed, senasForHand, teamOf, describePares,
-  describeJuego, handSum, amarracos, piedrasSueltas, makeRng, paresInfo,
+  describeJuego, handSum, amarracos, piedrasSueltas, makeRng, paresInfo, effRank,
   type Action, type GameState, type HandEvent, type LanceId, type Seat, type SenaId,
 } from '../engine';
 import { decide, type Level } from '../ai/bot';
@@ -103,6 +103,7 @@ export default function Play() {
   const [senaSheet, setSenaSheet] = useState(false);
   const [showPartner, setShowPartner] = useState(false);
   const [senaMsg, setSenaMsg] = useState<string | null>(null);
+  const [showLog, setShowLog] = useState(false);
   const [revealMeaning, setRevealMeaning] = useState(false);
   const rngRef = useRef(makeRng(randomSeed()));
 
@@ -366,6 +367,7 @@ export default function Play() {
     <div className="table-screen">
       <div className="table-top">
         <button className="icon-btn" aria-label="Salir de la partida" onClick={() => go('aprender')} style={{ color: '#fff' }}>✕</button>
+        <button className="icon-btn" aria-label="Historial de la mano" onClick={() => setShowLog(true)} style={{ color: '#fff', fontSize: '1.15rem' }}>📜</button>
         <div className="score">
           <Score label="Nosotros" tantos={h.scores[0]} juegos={game.juegos[0]} us />
           <Score label="Ellos" tantos={h.scores[1]} juegos={game.juegos[1]} us={false} />
@@ -406,19 +408,22 @@ export default function Play() {
         <div className={`me ${actor === 0 ? 'seat--turn' : ''}`}>
           <div className="seat-name">Tú {h.mano === 0 && <span className="mano-badge">MANO</span>}</div>
           <div className="my-cards" style={{ paddingTop: 8 }}>
-            {h.hands[0].map((c, i) => (
-              <CardView
-                key={`${h.musRound}-${i}-${c.rank}${c.suit}`}
-                card={c}
-                width={74}
-                hint={progress.settings.hints}
-                variant={h.rules.variant}
-                className="deal-in"
-                style={{ animationDelay: `${i * 0.06}s` }}
-                selected={sel.includes(i)}
-                onClick={legal === 'descarte' ? () => { sfx.card(); setSel((s) => (s.includes(i) ? s.filter((x) => x !== i) : [...s, i])); } : undefined}
-              />
-            ))}
+            {h.hands[0]
+              .map((c, i) => ({ c, i }))
+              .sort((a, b) => effRank(b.c, h.rules) - effRank(a.c, h.rules) || b.c.rank - a.c.rank)
+              .map(({ c, i }, pos) => (
+                <CardView
+                  key={`${game.handNo}-${c.rank}${c.suit}`}
+                  card={c}
+                  width={74}
+                  hint={progress.settings.hints}
+                  variant={h.rules.variant}
+                  className="deal-in"
+                  style={{ animationDelay: `${pos * 0.06}s` }}
+                  selected={sel.includes(i)}
+                  onClick={legal === 'descarte' ? () => { sfx.card(); setSel((s) => (s.includes(i) ? s.filter((x) => x !== i) : [...s, i])); } : undefined}
+                />
+              ))}
           </div>
           {lastEvents[0] && bubbleFor(lastEvents[0]) && <div className="bubble" style={{ position: 'static' }}>{bubbleFor(lastEvents[0])!.text}</div>}
         </div>
@@ -458,11 +463,22 @@ export default function Play() {
           <div className="grid">
             <button className="btn" onClick={() => act({ type: 'quiero' })}>Quiero</button>
             <button className="btn btn--ghost" onClick={() => act({ type: 'noQuiero' })}>No quiero</button>
-            {!h.bet!.ordago && <button className="btn btn--gold" onClick={() => act({ type: 'envido', amount: 2 })}>+2</button>}
+            {!h.bet!.ordago && <button className="btn btn--gold" onClick={() => act({ type: 'envido', amount: 2 })}>2 más</button>}
             {!h.bet!.ordago && <button className="btn btn--red" onClick={() => act({ type: 'ordago' })}>Órdago</button>}
           </div>
         )}
       </div>
+
+      {showLog && (
+        <>
+          <div className="sheet-backdrop" onClick={() => setShowLog(false)} />
+          <div className="sheet" role="dialog" aria-label="Historial de la mano">
+            <h2>Lo que ha pasado</h2>
+            <HandLog log={h.log} />
+            <button className="btn btn--block" style={{ marginTop: 12 }} onClick={() => setShowLog(false)}>Volver a la mesa</button>
+          </div>
+        </>
+      )}
 
       {senaMsg && (
         <>
@@ -550,6 +566,38 @@ export default function Play() {
           </div>
         </>
       )}
+    </div>
+  );
+}
+
+function logLine(e: HandEvent): string | null {
+  const who = 'seat' in e ? NAMES[e.seat] : '';
+  switch (e.kind) {
+    case 'mus': return `${who}: mus`;
+    case 'noMus': return `${who}: ¡no hay mus!`;
+    case 'discard': return `${who} se descarta de ${e.count}`;
+    case 'reparto': return `— Se reparten los descartes (ronda ${e.round + 1}) —`;
+    case 'reshuffle': return '— Se acaba el mazo: se barajan los descartes —';
+    case 'lanceStart': return `▸ ${LANCE_TITLE[e.lance].toUpperCase()}`;
+    case 'declare': return `${who}: ${e.lance} ${e.has ? 'sí' : 'no'}`;
+    case 'paso': return `${who}: paso`;
+    case 'envido': return `${who}: ${e.raise ? `${e.amount} más (total ${e.total})` : `envido ${e.amount}`}`;
+    case 'ordago': return `${who}: ¡ÓRDAGO!`;
+    case 'quiero': return `${who}: quiero`;
+    case 'noQuiero': return `${who}: no quiero`;
+    case 'lanceEnd': return outcomeText(e);
+    case 'deje': return `${e.team === 0 ? 'Vosotros' : 'Ellos'} cobráis ${e.points} de deje`.replace('Ellos cobráis', 'Ellos cobran');
+    default: return null;
+  }
+}
+
+function HandLog({ log }: { log: HandEvent[] }) {
+  const lines = log.map(logLine).filter((x): x is string => !!x);
+  return (
+    <div className="hand-log">
+      {lines.map((l, i) => (
+        <div key={i} className={l.startsWith('▸') ? 'hl-head' : l.startsWith('—') ? 'muted small' : ''}>{l}</div>
+      ))}
     </div>
   );
 }

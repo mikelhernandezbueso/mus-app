@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { LANCE_TITLE, teamOf } from '../engine';
+import { LANCE_TITLE, makeRng, shuffle, teamOf } from '../engine';
 import type { ChoiceExercise, Exercise, MatchExercise, OrderExercise, ShownHand, TapExercise } from '../exercises/types';
 import { sfx } from '../audio';
 import { CardRow, CardView } from './Card';
@@ -52,8 +52,17 @@ export interface ExerciseProps {
 function Feedback({ ok, explain, onContinue, answerText }: { ok: boolean; explain: string; onContinue: () => void; answerText?: string }) {
   useEffect(() => {
     (ok ? sfx.correct : sfx.wrong)();
+    if (!ok) {
+      try {
+        navigator.vibrate?.(60);
+      } catch {
+        /* sin vibración */
+      }
+    }
   }, [ok]);
   return (
+    <>
+    <div className="feedback-spacer" aria-hidden />
     <div className={`feedback ${ok ? 'feedback--ok' : 'feedback--bad'}`} role="alert">
       <h3>{ok ? '✅ ¡Bien!' : '❌ No era eso'}</h3>
       {!ok && answerText && (
@@ -67,6 +76,7 @@ function Feedback({ ok, explain, onContinue, answerText }: { ok: boolean; explai
         Continuar
       </button>
     </div>
+    </>
   );
 }
 
@@ -195,8 +205,11 @@ function OrderView({ ex, onResult, onContinue }: { ex: OrderExercise } & Omit<Ex
 function MatchView({ ex, onResult, onContinue }: { ex: MatchExercise } & Omit<ExerciseProps, 'ex'>) {
   const rights = useMemo(() => {
     const r = ex.pairs.map((p, i) => ({ i, text: p.right }));
-    // orden determinista pero mezclado
-    return r.map((x, k) => ({ ...x, s: (k * 7 + ex.spec.seed) % 11 })).sort((a, b) => a.s - b.s);
+    // barajado con semilla y sin dejar ninguna en su sitio
+    const rng = makeRng(ex.spec.seed ^ 0x5bd1e995);
+    let out = shuffle(r, rng);
+    for (let k = 0; k < 10 && out.some((x, j) => x.i === j); k++) out = shuffle(r, rng);
+    return out;
   }, [ex]);
   const [left, setLeft] = useState<number | null>(null);
   const [done, setDone] = useState<number[]>([]);

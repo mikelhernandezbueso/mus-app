@@ -49,6 +49,10 @@ export function Settings() {
       <div className="card-box" style={{ marginTop: 14 }}>
         <h3 style={{ marginBottom: 4 }}>App</h3>
         <div className="setting">
+          <div className="lbl">Objetivo diario<small>XP al día para mantener el ritmo.</small></div>
+          <Seg value={s.dailyGoal} options={[{ v: 10, label: '10' }, { v: 20, label: '20' }, { v: 30, label: '30' }, { v: 50, label: '50' }]} onChange={(v) => set('dailyGoal', v)} />
+        </div>
+        <div className="setting">
           <div className="lbl">Sonido</div>
           <Switch on={s.sound} onChange={(v) => set('sound', v)} label="Sonido" />
         </div>

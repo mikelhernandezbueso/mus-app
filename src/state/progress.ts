@@ -15,6 +15,8 @@ export interface Settings {
   tutor: boolean;
   /** Mostrar etiquetas de equivalencia (3 = R, 2 = A). */
   hints: boolean;
+  /** Objetivo diario de XP. */
+  dailyGoal: 10 | 20 | 30 | 50;
 }
 
 export interface ReviewItem {
@@ -59,6 +61,7 @@ export const DEFAULT_SETTINGS: Settings = {
   botLevel: 'normal',
   tutor: true,
   hints: true,
+  dailyGoal: 20,
 };
 
 export const initialProgress = (): Progress => ({
@@ -175,3 +178,5 @@ export function reviewAnswered(p: Progress, key: string, correct: boolean, now =
 }
 
 export const dueReviews = (p: Progress, now = Date.now()) => p.review.filter((r) => r.due <= now);
+
+export const todayXp = (p: Progress, now = new Date()) => p.daily[dayKey(now)] ?? 0;

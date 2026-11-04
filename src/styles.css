@@ -9,6 +9,7 @@
   --felt: #1d5c3a;
   --felt2: #134530;
   --felt-ink: #f6eedb;
+  --felt-text: #1d5c3a;
   --wood: #7a4a22;
   --wood2: #a8743f;
   --red: #c8102e;
@@ -39,6 +40,7 @@
     --felt2: #0f3523;
     --wood: #a8743f;
     --wood2: #c48d52;
+    --felt-text: #7fd1a0;
     --ok-bg: #173826;
     --bad-bg: #3d1419;
     --shadow: 0 2px 0 rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -57,6 +59,7 @@
   --felt2: #0f3523;
   --wood: #a8743f;
   --wood2: #c48d52;
+  --felt-text: #7fd1a0;
   --ok-bg: #173826;
   --bad-bg: #3d1419;
   --shadow: 0 2px 0 rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
@@ -78,7 +81,7 @@ body {
 button { font: inherit; color: inherit; }
 h1, h2, h3 { font-family: var(--display); margin: 0; line-height: 1.15; }
 p { margin: 0 0 0.6em; line-height: 1.5; }
-a { color: var(--felt); }
+a { color: var(--felt-text); }
 
 #root { max-width: 520px; margin: 0 auto; min-height: 100dvh; position: relative; }
 
@@ -114,8 +117,7 @@ a { color: var(--felt); }
 }
 .tab { background: none; border: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; font-size: 0.72rem; font-weight: 800; color: var(--muted); cursor: pointer; }
 .tab span:first-child { font-size: 1.45rem; line-height: 1; filter: grayscale(0.7); transition: transform 0.15s; }
-.tab--on { color: var(--felt); }
-:root[data-theme='dark'] .tab--on { color: #7fd1a0; }
+.tab--on { color: var(--felt-text); }
 .tab--on span:first-child { filter: none; transform: scale(1.12); }
 
 /* ---------- cabecera ---------- */
@@ -152,6 +154,9 @@ a { color: var(--felt); }
 .xpbar { height: 12px; background: rgba(0, 0, 0, 0.25); border-radius: 999px; overflow: hidden; margin-top: 8px; }
 .xpbar > div { height: 100%; background: linear-gradient(90deg, var(--gold), #ffd76a); border-radius: 999px; transition: width 0.6s; }
 
+.goal { display: flex; gap: 10px; align-items: center; margin-top: 10px; background: rgba(0,0,0,.18); border-radius: 12px; padding: 8px 10px; font-size: 1.3rem; }
+.xpbar--goal { margin-top: 4px; height: 8px; }
+.xpbar--goal > div { background: linear-gradient(90deg, #67c98a, #b6f0c8); }
 .unit { margin-top: 22px; }
 .unit-head { display: flex; gap: 12px; align-items: center; padding: 12px 14px; border-radius: 18px; background: var(--wood); color: #fff6e2; box-shadow: 0 4px 0 #4a2b12; }
 .unit-head--locked { background: #a8957a; box-shadow: 0 4px 0 #7d6c55; }
@@ -170,7 +175,7 @@ a { color: var(--felt); }
 .node-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .node-label { font-weight: 800; font-size: 0.85rem; text-align: center; max-width: 160px; }
 .stars { font-size: 0.85rem; letter-spacing: 1px; }
-.start-bubble { background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: 4px 10px; font-weight: 900; color: var(--felt); font-size: 0.8rem; text-transform: uppercase; animation: bob 1.6s ease-in-out infinite; }
+.start-bubble { background: var(--surface); border: 2px solid var(--line); border-radius: 12px; padding: 4px 10px; font-weight: 900; color: var(--felt-text); font-size: 0.8rem; text-transform: uppercase; animation: bob 1.6s ease-in-out infinite; }
 
 /* ---------- lección ---------- */
 .lesson { min-height: 100dvh; display: flex; flex-direction: column; padding: 12px 16px calc(16px + env(safe-area-inset-bottom)); }
@@ -205,6 +210,7 @@ a { color: var(--felt); }
 .team-1 .who { color: #ffc2c2; }
 
 .feedback { position: fixed; left: 50%; transform: translateX(-50%); bottom: 0; width: 100%; max-width: 520px; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); border-radius: 22px 22px 0 0; animation: slideUp 0.25s ease; z-index: 30; box-shadow: 0 -8px 24px rgba(0,0,0,.18); }
+.feedback-spacer { height: 230px; flex: none; }
 .feedback--ok { background: var(--ok-bg); color: var(--ok); }
 .feedback--bad { background: var(--bad-bg); color: var(--bad); }
 .feedback h3 { font-size: 1.3rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
@@ -355,3 +361,6 @@ table.t th { font-size: 0.8rem; text-transform: uppercase; color: var(--muted); 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
 }
+
+.hand-log { display: flex; flex-direction: column; gap: 3px; font-size: 0.95rem; }
+.hand-log .hl-head { font-weight: 900; margin-top: 8px; color: var(--felt-text); letter-spacing: .04em; }

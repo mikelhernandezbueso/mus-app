@@ -17,7 +17,7 @@ export const TOPICS: { id: string; icon: string; title: string; desc: string; mi
   { id: 'pares', icon: '👯', title: 'Pares', desc: 'Pareja, medias, duples', mix: [{ gen: 'paresKind' }, { gen: 'tapPares' }, { gen: 'paresWinner', opts: { n: 2 } }, { gen: 'paresWinner', opts: { n: 4 } }, { gen: 'paresValue' }, { gen: 'orderHands', opts: { lance: 'pares' } }] },
   { id: 'juego', icon: '🎯', title: 'Juego y punto', desc: 'Sumar y comparar', mix: [{ gen: 'juegoSum' }, { gen: 'hasJuego' }, { gen: 'juegoWinner', opts: { n: 2 } }, { gen: 'juegoWinner', opts: { n: 4 } }, { gen: 'juegoOrPunto' }, { gen: 'puntoWinner' }] },
   { id: 'empates', icon: '✋', title: 'Empates', desc: 'El poder de la mano', mix: [{ gen: 'tieMano' }, { gen: 'juegoWinner', opts: { n: 2, tie: true } }] },
-  { id: 'descartes', icon: '🔄', title: 'Descartes', desc: 'Qué tirar en el mus', mix: [{ gen: 'discardReyes' }, { gen: 'discardChica' }, { gen: 'discardPares' }] },
+  { id: 'descartes', icon: '🔄', title: 'Mus y descartes', desc: 'Cortar o pedir, y qué tirar', mix: [{ gen: 'musOrCut' }, { gen: 'discardReyes' }, { gen: 'discardChica' }, { gen: 'discardPares' }] },
   { id: 'envites', icon: '🪙', title: 'Envites', desc: 'Envidar, querer y cobrar', mix: [{ gen: 'betDecision' }, { gen: 'cobroDeje' }, { gen: 'cobroLance' }] },
   { id: 'tanteo', icon: '🪨', title: 'Tanteo', desc: 'Piedras, recuento, órdagos', mix: [{ gen: 'amarracos' }, { gen: 'recuentoPaso' }, { gen: 'quienLlega' }, { gen: 'ordagoWinner' }] },
   { id: 'senas', icon: '😉', title: 'Señas', desc: 'Leer y hacer señas', mix: [{ gen: 'senaMeaning' }, { gen: 'senaGesture' }, { gen: 'senaForHand' }] },

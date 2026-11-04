@@ -139,27 +139,27 @@ export function betDecision(st: HandState, seat: Seat, ctx: BotContext): Decisio
   if (b.stage === 'abrir') {
     const othersPassed = b.openIdx > 0;
     const last = b.openIdx === b.participants.length - 1;
-    // Órdago: con jugada casi segura y el rival cerca, o por desesperación
-    if (p > 0.9 && (theyClose || ctx.level === 'experto' && p > 0.96 && ctx.rng() < 0.3)) {
-      return { action: { type: 'ordago' }, why: `${base}. Es casi seguro y ${theyClose ? 'ellos están cerca de ganar' : 'merece la pena'}: ¡órdago!`, p: pctTrue / 100 };
+    // Órdago: solo con el rival cerca de ganar (con buena jugada o para remontar).
+    if (theyClose && p > 0.78 && ctx.level !== 'principiante') {
+      return { action: { type: 'ordago' }, why: `${base}. Ellos están a punto de ganar y vas muy fuerte: ¡órdago!`, p: pctTrue / 100 };
     }
-    if (theyClose && theirs - ours >= 15 && p > 0.6 && ctx.level !== 'principiante') {
+    if (theyClose && theirs - ours >= 12 && p > 0.55 && ctx.level !== 'principiante') {
       return { action: { type: 'ordago' }, why: `${base}. Vais muy por detrás y ellos casi ganan: es momento de órdago.`, p: pctTrue / 100 };
     }
-    if (p >= 0.66) {
-      const amount = ctx.level === 'experto' && p > 0.88 ? 5 : 2;
-      return { action: { type: 'envido', amount }, why: `${base}. Es probable ganar: envida${amount > 2 ? ` ${amount}` : ''}.`, p: pctTrue / 100 };
+    if (ctx.level === 'principiante' && p > 0.85 && ctx.rng() < 0.08) {
+      return { action: { type: 'ordago' }, why: `${base}. ¡Órdago!`, p: pctTrue / 100 };
     }
-    if (p >= 0.56 && (seat === st.mano || lance === 'pares' || lance === 'juego')) {
-      return { action: { type: 'envido', amount: 2 }, why: `${base}. Vas por delante${seat === st.mano ? ' y eres mano' : ''}: un envido pequeño.`, p: pctTrue / 100 };
+    if (p >= 0.75) {
+      const amount = ctx.level === 'experto' && p > 0.9 ? 5 : 2;
+      return { action: { type: 'envido', amount }, why: `${base}. Es muy probable ganar: envida${amount > 2 ? ` ${amount}` : ''}.`, p: pctTrue / 100 };
     }
-    if (othersPassed && last && (lance === 'grande' || lance === 'chica') && ctx.rng() < bluff * 2 && !weClose) {
+    if (p >= 0.68 && seat === st.mano) {
+      return { action: { type: 'envido', amount: 2 }, why: `${base}. Vas por delante y eres mano (ganas los empates): un envido.`, p: pctTrue / 100 };
+    }
+    if (othersPassed && last && (lance === 'grande' || lance === 'chica') && p > 0.25 && ctx.rng() < bluff * 1.5 && !weClose) {
       return { action: { type: 'envido', amount: 2 }, why: `${base}. Todos han pasado: un farol de postre puede llevarse el deje.`, p: pctTrue / 100 };
     }
-    if (ctx.rng() < bluff * 0.5 && p > 0.3) {
-      return { action: { type: 'envido', amount: 2 }, why: `${base}. Pequeño farol.`, p: pctTrue / 100 };
-    }
-    return { action: { type: 'paso' }, why: `${base}. ${p >= 0.5 ? 'Vas algo por delante, pero sin ser mano es mejor esperar' : 'No es suficiente'}: pasa.`, p: pctTrue / 100 };
+    return { action: { type: 'paso' }, why: `${base}. ${p >= 0.5 ? 'Vas algo por delante, pero no lo bastante para envidar' : 'No es suficiente'}: pasa.`, p: pctTrue / 100 };
   }
 
   // Respondiendo: un envite del rival indica fuerza; lo descontamos un poco.
@@ -181,7 +181,7 @@ export function betDecision(st: HandState, seat: Seat, ctx: BotContext): Decisio
     }
     return { action: { type: 'envido', amount: total >= 5 ? 5 : 2 }, why: `${base}. Muy por delante: sube el envite.`, p: pctTrue / 100 };
   }
-  const need = Math.min(0.62, 0.42 + Math.max(0, total - 2) * 0.025);
+  const need = Math.min(0.66, 0.46 + Math.max(0, total - 2) * 0.025);
   if (pa >= need) return { action: { type: 'quiero' }, why: `${base}. Merece la pena: quiero.`, p: pctTrue / 100 };
   return {
     action: { type: 'noQuiero' },

@@ -24,6 +24,7 @@ export const ACHIEVEMENTS: Achievement[] = [
   { id: 'todo', icon: '🏆', title: 'Txapeldun', desc: 'Completa todo el temario.', check: (p) => ALL_LESSONS.every((x) => p.lessons[x.lesson.id]) },
   { id: 'perfecta', icon: '⭐', title: 'Sin un fallo', desc: 'Termina una lección con 3 estrellas.', check: (p) => p.stats.perfectLessons >= 1 },
   { id: 'perfectas10', icon: '🌟', title: 'Fino filipino', desc: '10 lecciones con 3 estrellas.', check: (p) => p.stats.perfectLessons >= 10 },
+  { id: 'objetivo', icon: '🎯', title: 'Deberes hechos', desc: 'Cumple tu objetivo diario de XP.', check: (p) => Object.values(p.daily).some((x) => x >= p.settings.dailyGoal) },
   { id: 'racha3', icon: '🔥', title: 'Tres días seguidos', desc: 'Racha de 3 días.', check: (p) => p.streak.best >= 3 },
   { id: 'racha7', icon: '🔥', title: 'Una semana de mus', desc: 'Racha de 7 días.', check: (p) => p.streak.best >= 7 },
   { id: 'xp500', icon: '💎', title: '500 XP', desc: 'Consigue 500 puntos de experiencia.', check: (p) => p.xp >= 500 },

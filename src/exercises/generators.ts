@@ -420,7 +420,11 @@ const betDecision: Gen = (rng, rules, opts, spec) => {
       if (!has[0] || !(has[1] || has[3])) continue;
     }
     if (lance === 'juego' && !declared.juego.some(Boolean)) continue;
-    const p = winProbability({ me: 0, myHand: hands[0], mano, rules, declared }, lance, 220, randInt(rng, 1e6));
+    const k = { me: 0 as Seat, myHand: hands[0], mano, rules, declared };
+    // Criba rápida: solo se afina la probabilidad en manos que pintan claras.
+    const quick = winProbability(k, lance, 50, randInt(rng, 1e6));
+    if (quick > 0.3 && quick < 0.68) continue;
+    const p = winProbability(k, lance, 220, randInt(rng, 1e6));
     let answer: string | null = null;
     if (!respond) answer = p >= 0.8 ? 'envido' : p <= 0.2 ? 'paso' : null;
     else answer = p >= 0.72 ? 'quiero' : p <= 0.22 ? 'noQuiero' : null;
@@ -687,6 +691,31 @@ const examHand: Gen = (rng, rules, _opts, spec) => {
   return { kind: 'multi', spec, rules, hands: sh, prompt: 'Mano de examen', explain: '', parts };
 };
 
+
+const musOrCut: Gen = (rng, rules, _opts, spec) => {
+  const cut = rng() < 0.5;
+  const isR = (c: Card) => effRank(c, rules) === 12;
+  const isA = (c: Card) => effRank(c, rules) === 1;
+  const h = handWhere(rng, (x) => {
+    const p = paresInfo(x, rules);
+    const j = juegoInfo(x, rules);
+    if (cut) return p.kind === 'duples' || (p.kind === 'medias' && (p.ranks[0] >= 10 || p.ranks[0] === 1)) || j.sum === 31;
+    return p.kind === 'none' && !j.hasJuego && x.filter(isR).length <= 1 && x.filter(isA).length <= 1;
+  });
+  const p = paresInfo(h, rules);
+  const j = juegoInfo(h, rules);
+  const why = cut
+    ? `Tienes ${p.kind !== 'none' && (p.kind === 'duples' || p.kind === 'medias') ? describePares(p) : ''}${(p.kind === 'duples' || p.kind === 'medias') && j.sum === 31 ? ' y ' : ''}${j.sum === 31 ? 'la 31' : ''}: es una jugada muy buena que puedes estropear cambiando cartas. Se corta.`
+    : 'Sin pares, sin juego y casi sin reyes ni ases: no tienes nada que proteger. Pide mus para mejorar.';
+  return {
+    kind: 'choice', spec, rules, hint: true, cards: sortHand(h, rules),
+    prompt: 'Te toca hablar en el mus. ¿Qué dices?',
+    options: [{ id: 'mus', label: 'Mus' }, { id: 'corte', label: 'No hay mus' }],
+    answer: cut ? 'corte' : 'mus',
+    explain: why,
+  };
+};
+
 const quiz: Gen = (rng, rules, opts, spec) => {
   const q = QUIZ.find((x) => x.id === opts.id) ?? pick(rng, QUIZ);
   const options = q.options.map((label, i) => ({ id: String(i), label }));
@@ -708,6 +737,7 @@ export const GENERATORS: Record<string, Gen> = {
   paresKind, tapPares, paresValue, paresWinner,
   juegoSum, hasJuego: hasJuegoGen, juegoWinner, juegoOrPunto, puntoWinner,
   orderHands, tieMano,
+  musOrCut,
   discardReyes: discardGen('reyes'), discardChica: discardGen('chica'), discardPares: discardGen('pares'),
   betDecision, senaMeaning, senaGesture, senaForHand: senaForHandGen, matchTerms,
   cobroDeje, cobroLance, recuentoPaso, ordagoWinner, amarracos: amarracosGen, quienLlega, examHand, quiz,

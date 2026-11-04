@@ -56,12 +56,12 @@ export function SuitPip({ suit, scale = 1 }: { suit: Suit; scale?: number }) {
 
 const PIPS: Record<number, [number, number][]> = {
   1: [[0, 0]],
-  2: [[0, -22], [0, 22]],
-  3: [[0, -26], [0, 0], [0, 26]],
-  4: [[-14, -22], [14, -22], [-14, 22], [14, 22]],
-  5: [[-14, -24], [14, -24], [0, 0], [-14, 24], [14, 24]],
-  6: [[-14, -26], [14, -26], [-14, 0], [14, 0], [-14, 26], [14, 26]],
-  7: [[-14, -28], [14, -28], [0, -14], [-14, 2], [14, 2], [-14, 28], [14, 28]],
+  2: [[0, -24], [0, 24]],
+  3: [[0, -30], [0, 0], [0, 30]],
+  4: [[-17, -26], [17, -26], [-17, 26], [17, 26]],
+  5: [[-17, -30], [17, -30], [0, 0], [-17, 30], [17, 30]],
+  6: [[-17, -30], [17, -30], [-17, 0], [17, 0], [-17, 30], [17, 30]],
+  7: [[-17, -32], [17, -32], [0, -16], [-17, 0], [17, 0], [-17, 32], [17, 32]],
 };
 
 function Figure({ rank, suit }: { rank: 10 | 11 | 12; suit: Suit }) {
@@ -162,13 +162,13 @@ export function CardView({ card, faceDown, width = 72, selected, dim, hint, vari
         <g transform="rotate(180 50 75)">
           <text x="9" y="35" fontFamily="Fraunces, Georgia, serif" fontWeight="800" fontSize="30" fill={col}>{label(card.rank)}</text>
         </g>
-        <g transform="translate(56,80)">
+        <g transform="translate(55,77)">
           {card.rank >= 10 ? (
             <g transform="scale(.82)"><Figure rank={card.rank as 10 | 11 | 12} suit={card.suit} /></g>
           ) : (
             PIPS[card.rank].map(([x, y], i) => (
               <g key={i} transform={`translate(${x * 0.82},${y * 0.82})`}>
-                <SuitPip suit={card.suit} scale={card.rank === 1 ? 1.9 : 0.72} />
+                <SuitPip suit={card.suit} scale={card.rank === 1 ? 1.9 : card.rank <= 3 ? 0.95 : 0.84} />
               </g>
             ))
           )}
