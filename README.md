@@ -4,8 +4,6 @@ Aprende a jugar al **mus** desde cero, estilo Duolingo: lecciones cortas, práct
 
 **App publicada:** https://mikelhernandezbueso.github.io/mus-app/
 
-> ⚠️ Mira [INFORME.md](./INFORME.md): durante la construcción la sesión no tenía permiso de escritura en GitHub, así que puede que tengas que hacer tú el primer push para que se despliegue (instrucciones allí).
-
 ## Instalarla en el móvil
 
 La app es una PWA: se instala desde el navegador y funciona sin conexión.

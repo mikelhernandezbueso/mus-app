@@ -1,18 +1,11 @@
 # Informe de trabajo — Mus Eskola
 
-## Estado del despliegue (léelo primero)
+## Estado del despliegue
 
-- **Todo el código está en la rama `claude/vibrant-mendel-ps8dqv`** de este repositorio local, con commits pequeños.
-- **No se ha podido hacer push a GitHub.** Tanto `git push` (a `main` y a la rama) como la API de GitHub devolvieron **403**: la app de Claude no tiene permiso de escritura en `mikelhernandezbueso/mus-app` («Claude doesn't have GitHub access to mikelhernandezbueso/mus-app for your organization»). Se reintentó varias veces durante la noche, sin éxito. Por eso **el workflow de Actions no ha podido ejecutarse y GitHub Pages aún no tiene la app**.
-- **Alternativa para probarla ya:** publiqué la misma app como página privada de claude.ai (Artifact): https://claude.ai/artifact/8VMyBTsEUsqw8inTKGdNrS. Se puede usar en el móvil, pero ahí no se instala como PWA ni funciona offline (el entorno de Artifacts no permite service workers) y el progreso es independiente del de la PWA.
-
-### Cómo publicarla en GitHub Pages (5 minutos)
-1. Dale acceso a Claude al repo: https://claude.ai/connect-github (y, si no está instalada, la app de GitHub de Claude en el repo: https://github.com/apps/claude/installations/select_target). Después pídeme en esta misma sesión «haz el push» y lo hago yo.
-2. O hazlo tú desde un ordenador con este código:
-   ```bash
-   git push origin claude/vibrant-mendel-ps8dqv:main
-   ```
-   El workflow `.github/workflows/deploy.yml` se ejecuta con cada push (en cualquier rama: `branches: ['**']`), pasa los tests, compila con `base: '/mus-app/'` y publica en https://mikelhernandezbueso.github.io/mus-app/. Como Pages está configurado con «GitHub Actions», no hace falta nada más. Si haces push primero a `main`, `main` queda como rama por defecto, que es la que el entorno `github-pages` deja desplegar.
+- El código está en `main` (y en la rama de trabajo `claude/vibrant-mendel-ps8dqv`).
+- Durante la primera noche GitHub rechazaba el push (403, sin permiso de escritura para la app de Claude); en cuanto se reconectó GitHub se subió todo.
+- El workflow `.github/workflows/deploy.yml` se ejecuta en cada push a `main`: pasa los tests, compila con `base: '/mus-app/'` y publica en https://mikelhernandezbueso.github.io/mus-app/.
+- Vista previa alternativa (sin instalación ni modo offline): https://claude.ai/artifact/8VMyBTsEUsqw8inTKGdNrS
 
 ## Qué he construido
 
@@ -65,7 +58,7 @@ Una PWA (Vite + React + TypeScript) para aprender mus desde cero, estilo Duoling
 
 ## Problemas encontrados
 
-- **Sin permiso de escritura en GitHub** (ver arriba): es lo único que falta para cumplir "desplegada en GitHub Pages". Todo lo demás está hecho y verificado en local.
+- **Sin permiso de escritura en GitHub** la primera noche: se resolvió al reconectar GitHub.
 - Sin acceso web completo: la investigación se hizo con extractos de buscador; algún término coloquial vasco (p. ej. *kanpo*) tiene uso variable y así se indica en el glosario.
 - Las fuentes discrepan en algunas señas (tres reyes, duples), en la 31 real y en la vaca: se eligió lo más extendido en Euskadi y se documentan las alternativas.
 
