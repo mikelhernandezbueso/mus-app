@@ -1,15 +1,20 @@
 import { defineConfig } from 'vitest/config';
 import react from '@vitejs/plugin-react';
 import { VitePWA } from 'vite-plugin-pwa';
+import { viteSingleFile } from 'vite-plugin-singlefile';
 
 // El repo se publica en https://<usuario>.github.io/mus-app/
 const base = '/mus-app/';
 
-export default defineConfig({
-  base,
+// `--mode artifact`: un único HTML autocontenido (sin service worker) para la vista previa en claude.ai.
+export default defineConfig(({ mode }) => ({
+  base: mode === 'artifact' ? './' : base,
+  build: mode === 'artifact' ? { outDir: 'dist-artifact', assetsInlineLimit: 100_000_000 } : undefined,
   plugins: [
     react(),
+    ...(mode === 'artifact' ? [viteSingleFile()] : []),
     VitePWA({
+      disable: mode === 'artifact',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
@@ -39,4 +44,4 @@ export default defineConfig({
     include: ['src/**/*.test.ts'],
     environment: 'node',
   },
-});
+}));

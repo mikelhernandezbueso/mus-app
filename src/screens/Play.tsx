@@ -268,7 +268,7 @@ export default function Play() {
           </div>
         </div>
         <div className="stack">
-          <button className="btn btn--block" onClick={() => { setGame(null); localStorage.removeItem(SAVE_KEY); }}>Otra partida</button>
+          <button className="btn btn--block" onClick={() => { setGame(null); try { localStorage.removeItem(SAVE_KEY); } catch { /* */ } }}>Otra partida</button>
           <button className="btn btn--ghost btn--block" onClick={() => go('aprender')}>Salir</button>
         </div>
       </div>
@@ -403,8 +403,9 @@ export default function Play() {
           )}
         </div>
         {seatView(1, 'right')}
-        <div className="me">
-          <div className="my-cards">
+        <div className={`me ${actor === 0 ? 'seat--turn' : ''}`}>
+          <div className="seat-name">Tú {h.mano === 0 && <span className="mano-badge">MANO</span>}</div>
+          <div className="my-cards" style={{ paddingTop: 8 }}>
             {h.hands[0].map((c, i) => (
               <CardView
                 key={`${h.musRound}-${i}-${c.rank}${c.suit}`}

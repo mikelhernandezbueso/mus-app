@@ -11,7 +11,7 @@ export function Achievements() {
   return (
     <div className="screen">
       <div className="topbar">
-        <button className="icon-btn" aria-label="Volver" onClick={() => history.back()}>←</button>
+        <button className="icon-btn" aria-label="Volver" onClick={() => go('aprender')}>←</button>
         <h1>Logros</h1>
       </div>
       <div className="stat-grid" style={{ marginBottom: 14 }}>

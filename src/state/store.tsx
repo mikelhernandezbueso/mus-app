@@ -38,8 +38,13 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const t = progress.settings.theme;
     const root = document.documentElement;
-    if (t === 'auto') root.removeAttribute('data-theme');
-    else root.setAttribute('data-theme', t);
+    if (t === 'auto') {
+      if (root.dataset.musTheme) root.removeAttribute('data-theme');
+      delete root.dataset.musTheme;
+    } else {
+      root.setAttribute('data-theme', t);
+      root.dataset.musTheme = '1';
+    }
   }, [progress.settings.theme]);
 
   const rules = useMemo(() => rulesFrom(progress.settings), [progress.settings]);

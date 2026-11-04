@@ -61,16 +61,22 @@ Opción múltiple (teoría) · ¿Quién gana el lance? · Toca las cartas de los
 
 - [x] Investigación y REGLAMENTO.md
 - [x] PLAN.md
-- [ ] Proyecto Vite + React + TS + PWA + workflow Pages
-- [ ] Motor + tests (≥100)
-- [ ] Generadores de ejercicios
-- [ ] Temario unidades 1-12 + reproductor de lecciones
-- [ ] Practicar + repaso espaciado
-- [ ] Despliegue verificado
-- [ ] Jugar contra bots + modo tutor + señas
-- [ ] Unidades 13-17, Consultar (reglamento, chuletas, glosario con buscador)
-- [ ] Logros, racha, niveles, sonidos, animaciones
-- [ ] Onboarding, modo oscuro
-- [ ] Recorrido Playwright 390x844 + capturas
-- [ ] Revisión experta del contenido
-- [ ] README.md, INFORME.md
+- [x] Proyecto Vite + React + TS + PWA + workflow Pages
+- [x] Motor + tests (≥100)
+- [x] Generadores de ejercicios
+- [x] Temario unidades 1-12 + reproductor de lecciones
+- [x] Practicar + repaso espaciado
+- [ ] Despliegue verificado en GitHub Pages (bloqueado: sin permiso de escritura en GitHub, ver INFORME.md)
+- [x] Jugar contra bots + modo tutor + señas
+- [x] Unidades 13-17, Consultar (reglamento, chuletas, glosario con buscador)
+- [x] Logros, racha, niveles, sonidos, animaciones
+- [x] Onboarding, modo oscuro
+- [x] Recorrido Playwright 390x844 + capturas
+- [x] Revisión experta del contenido
+- [x] README.md, INFORME.md
+
+## Siguientes mejoras
+- [ ] Mano guiada interactiva en la unidad 12
+- [ ] Bots que modelen faroles del rival
+- [ ] Animaciones de fichas y reparto en la mesa
+- [ ] Estadísticas por lance
