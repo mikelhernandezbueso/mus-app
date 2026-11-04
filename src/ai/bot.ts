@@ -133,7 +133,7 @@ export function betDecision(st: HandState, seat: Seat, ctx: BotContext): Decisio
   const theyClose = theirs >= target - 6;
   const weClose = ours >= target - 6;
   const val = lanceValueText(lance, st.hands[seat], r);
-  const base = `${val ? `Con ${val}, ` : ''}calculo que tu pareja gana ${LANCE_NAMES[lance]} un ${pctTrue}% de las veces`;
+  const base = `${val ? `Con ${val}, calculo` : 'Calculo'} que tu pareja gana ${LANCE_NAMES[lance]} un ${pctTrue}% de las veces`;
   const bluff = ctx.level === 'principiante' ? 0.04 : ctx.level === 'normal' ? 0.08 : 0.1;
 
   if (b.stage === 'abrir') {
@@ -146,11 +146,11 @@ export function betDecision(st: HandState, seat: Seat, ctx: BotContext): Decisio
     if (theyClose && theirs - ours >= 15 && p > 0.6 && ctx.level !== 'principiante') {
       return { action: { type: 'ordago' }, why: `${base}. Vais muy por detrás y ellos casi ganan: es momento de órdago.`, p: pctTrue / 100 };
     }
-    if (p >= 0.72) {
+    if (p >= 0.66) {
       const amount = ctx.level === 'experto' && p > 0.88 ? 5 : 2;
       return { action: { type: 'envido', amount }, why: `${base}. Es probable ganar: envida${amount > 2 ? ` ${amount}` : ''}.`, p: pctTrue / 100 };
     }
-    if (p >= 0.58 && (seat === st.mano || lance === 'pares' || lance === 'juego')) {
+    if (p >= 0.56 && (seat === st.mano || lance === 'pares' || lance === 'juego')) {
       return { action: { type: 'envido', amount: 2 }, why: `${base}. Vas por delante${seat === st.mano ? ' y eres mano' : ''}: un envido pequeño.`, p: pctTrue / 100 };
     }
     if (othersPassed && last && (lance === 'grande' || lance === 'chica') && ctx.rng() < bluff * 2 && !weClose) {
@@ -159,7 +159,7 @@ export function betDecision(st: HandState, seat: Seat, ctx: BotContext): Decisio
     if (ctx.rng() < bluff * 0.5 && p > 0.3) {
       return { action: { type: 'envido', amount: 2 }, why: `${base}. Pequeño farol.`, p: pctTrue / 100 };
     }
-    return { action: { type: 'paso' }, why: `${base}. No es suficiente: pasa.`, p: pctTrue / 100 };
+    return { action: { type: 'paso' }, why: `${base}. ${p >= 0.5 ? 'Vas algo por delante, pero sin ser mano es mejor esperar' : 'No es suficiente'}: pasa.`, p: pctTrue / 100 };
   }
 
   // Respondiendo: un envite del rival indica fuerza; lo descontamos un poco.

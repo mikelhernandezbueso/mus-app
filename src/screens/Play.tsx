@@ -305,7 +305,7 @@ export default function Play() {
       if (h.bet.total || h.bet.ordago) status = `${h.bet.ordago ? '¡Órdago' : `${h.bet.total} envidados`} a ${LANCE_TITLE[h.bet.lance].toLowerCase()}${h.bet.ordago ? '!' : ''}`;
       else if (!betSpoken && prevEnd) status = `${outcomeText(prevEnd)} ${skipped.length && skipped.at(-1) !== prevEnd ? outcomeText(skipped.at(-1) as Extract<HandEvent, { kind: 'lanceEnd' }>) : ''} Ahora ${LANCE_TITLE[h.bet.lance].toLowerCase()}.`;
       else if (!betSpoken && h.bet.lance === 'grande') status = `Se corta el mus. ${who}.`;
-      else status = `${LANCE_TITLE[h.bet.lance]}: ${who.toLowerCase()}.`;
+      else status = `${LANCE_TITLE[h.bet.lance]}. ${who}.`;
     }
   }
   const currentLance: LanceId | null = h.bet?.lance ?? null;
@@ -512,16 +512,22 @@ export default function Play() {
                       </div>
                     ))}
                   </div>
-                  {h.log.filter((e) => e.kind === 'deje').map((e, i) => e.kind === 'deje' && (
+                  {!h.recuento && h.log.filter((e) => e.kind === 'deje').map((e, i) => e.kind === 'deje' && (
                     <div key={`d${i}`} className="recuento-line">
                       <span>{LANCE_TITLE[e.lance]} · no querido (deje)</span>
                       <b style={{ color: e.team === 0 ? 'var(--ok)' : 'var(--bad)' }}>{e.team === 0 ? 'Nosotros' : 'Ellos'} +{e.points}</b>
                     </div>
                   ))}
-                  {(h.recuento ?? []).filter((it) => it.points > 0).map((it, i) => (
+                  {(h.recuento ?? []).map((it, i) => (
                     <div key={i} className="recuento-line">
-                      <span>{LANCE_TITLE[it.lance]}{it.winnerSeat !== null ? ` · ${NAMES[it.winnerSeat]}` : ''}<br /><span className="small muted">{it.parts.map((p) => `${p.label} ${p.points}`).join(' + ')}</span></span>
-                      <b style={{ color: it.team === 0 ? 'var(--ok)' : 'var(--bad)' }}>{it.team === 0 ? 'Nosotros' : 'Ellos'} +{it.points}</b>
+                      <span>
+                        {LANCE_TITLE[it.lance]}{it.winnerSeat !== null ? ` · ${NAMES[it.winnerSeat]}` : ''}
+                        <br />
+                        <span className="small muted">
+                          {[...(it.alreadyCounted ? [`deje ${it.alreadyCounted} (ya cobrado)`] : []), ...it.parts.map((p) => `${p.label} ${p.points}`)].join(' + ')}
+                        </span>
+                      </span>
+                      <b style={{ color: it.team === 0 ? 'var(--ok)' : 'var(--bad)' }}>{it.team === 0 ? 'Nosotros' : 'Ellos'} +{it.points + (it.alreadyCounted ?? 0)}</b>
                     </div>
                   ))}
                   <div className="recuento-line"><span><b>Esta mano</b></span><b>{delta[0]} – {delta[1]}</b></div>
