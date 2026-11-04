@@ -1,0 +1,60 @@
+export interface GlossaryEntry {
+  term: string;
+  /** Término en euskera (si lo es) o equivalente vasco. */
+  eu?: string;
+  def: string;
+  origin?: string;
+  tags?: ('basico' | 'envites' | 'jugadas' | 'mesa' | 'euskera' | 'tanteo' | 'senas')[];
+}
+
+export const GLOSSARY: GlossaryEntry[] = [
+  { term: 'Mano', eu: 'esku', def: 'Jugador a la derecha del que reparte. Habla primero y gana todos los empates.', tags: ['basico', 'mesa'] },
+  { term: 'Postre', def: 'El que reparte. Es el último en hablar en cada lance.', tags: ['basico', 'mesa'] },
+  { term: 'Pareja', def: 'Los dos compañeros que juegan juntos, sentados frente a frente. También: dos cartas iguales en los pares.', tags: ['basico', 'mesa', 'jugadas'] },
+  { term: 'Mus', eu: 'mus', def: 'Pedir cambiar cartas. Si los cuatro dicen "mus", todos se descartan.', origin: 'En euskera "mus egin" o "darse mus" es pedir descarte.', tags: ['basico'] },
+  { term: 'No hay mus', eu: 'ez dago musik', def: 'Cortar el mus: se acaban los descartes y empiezan los lances.', tags: ['basico'] },
+  { term: 'Cortar', def: 'Decir "no hay mus".', tags: ['basico'] },
+  { term: 'Descarte', def: 'Cartas que se tiran tras pedir mus (de una a cuatro) para recibir otras nuevas.', tags: ['basico'] },
+  { term: 'Lance', def: 'Cada una de las cuatro partes de la mano: grande, chica, pares y juego (o punto).', tags: ['basico'] },
+  { term: 'Grande', eu: 'handia', def: 'Primer lance: gana quien tiene las cartas más altas.', origin: '"Handia" significa "grande" en euskera.', tags: ['basico', 'euskera'] },
+  { term: 'Chica', eu: 'txikia', def: 'Segundo lance: gana quien tiene las cartas más bajas.', origin: '"Txikia" significa "pequeña".', tags: ['basico', 'euskera'] },
+  { term: 'Pares', eu: 'pareak', def: 'Tercer lance: gana la mejor combinación de cartas iguales.', tags: ['basico', 'euskera', 'jugadas'] },
+  { term: 'Juego', eu: 'jokoa', def: 'Cuarto lance: tienen juego quienes suman 31 o más.', tags: ['basico', 'euskera', 'jugadas'] },
+  { term: 'Punto', eu: 'puntua', def: 'Se juega en lugar del juego cuando nadie tiene juego. Gana la suma más alta.', tags: ['basico', 'euskera', 'jugadas'] },
+  { term: 'Medias', eu: 'erdiak', def: 'Tres cartas iguales. Valen 2 tantos.', tags: ['jugadas', 'euskera'] },
+  { term: 'Duples', eu: 'dupleak', def: 'Dos parejas, o cuatro cartas iguales. La mejor jugada de pares; valen 3 tantos.', tags: ['jugadas', 'euskera'] },
+  { term: 'La 31', eu: 'hogeita hamaika', def: 'El mejor juego. Vale 3 tantos (los demás juegos, 2).', tags: ['jugadas'] },
+  { term: '31 real', def: 'La 31 hecha con tres sietes y una figura. Donde se juega, gana a cualquier 31.', tags: ['jugadas'] },
+  { term: 'Pitos', def: 'Los ases (y, a 8 reyes, también los doses).', tags: ['jugadas'] },
+  { term: 'Treses', def: 'A 8 reyes, los treses valen como reyes.', tags: ['jugadas'] },
+  { term: 'Solomillo', def: 'Tres reyes y un as: medias de reyes y la 31 a la vez.', tags: ['jugadas', 'senas'] },
+  { term: 'Ciego', def: 'No llevar nada (ni pares ni juego). También la seña que lo indica.', tags: ['jugadas', 'senas'] },
+  { term: 'Paso', eu: 'paso', def: 'No envidar (o no envidar todavía).', tags: ['envites', 'euskera'] },
+  { term: 'Envido', eu: 'inbido', def: 'Apuesta de 2 tantos (el envite mínimo). También se puede envidar más.', tags: ['envites', 'euskera'] },
+  { term: 'Envidar más', def: 'Subir el envite del rival: "dos más", "cinco más".', tags: ['envites'] },
+  { term: 'Quiero', eu: 'iduki / euki / eutsi', def: 'Aceptar el envite. Se resuelve al final de la mano.', origin: '"Iduki" y "euki" significan "tener, mantener"; "eutsi", "agarrar, aguantar": aguanto la apuesta.', tags: ['envites', 'euskera'] },
+  { term: 'No quiero', eu: 'ez', def: 'Rechazar el envite. La pareja que envidó cobra el deje en el momento.', tags: ['envites', 'euskera'] },
+  { term: 'Kanpo', eu: 'kanpo', def: '"Fuera". Se oye en algunas mesas vascas para quedarse fuera de un envite (equivale a no querer) o para decir que una jugada no entra.', origin: 'Uso coloquial, varía según la zona.', tags: ['envites', 'euskera'] },
+  { term: 'Órdago', eu: 'hordago', def: 'Envite de toda la partida. Si se quiere, quien gana ese lance gana el juego.', origin: 'Del euskera "hor dago": "ahí está".', tags: ['envites', 'euskera'] },
+  { term: 'Deje', def: 'Lo que cobra en el momento quien hizo el envite no querido: 1 tanto, o lo envidado antes si era una subida.', tags: ['envites', 'tanteo'] },
+  { term: 'En paso', def: 'Lance en el que todos pasan. A grande, chica y punto vale 1 tanto para el ganador.', tags: ['envites', 'tanteo'] },
+  { term: 'Tanto', def: 'La unidad de puntuación. También se llama piedra.', tags: ['tanteo'] },
+  { term: 'Piedra', eu: 'harria', def: 'Un tanto. Antiguamente se contaba con piedrecitas o garbanzos.', tags: ['tanteo', 'euskera'] },
+  { term: 'Amarraco', eu: 'hamarreko', def: 'Cinco tantos. 8 amarracos = 40 tantos = un juego.', origin: 'Probablemente del euskera "hamarreko" ("de diez"); origen discutido.', tags: ['tanteo', 'euskera'] },
+  { term: 'Juego (partida)', def: 'Partida a 40 (o 30) tantos. La primera pareja en llegar lo gana.', tags: ['tanteo'] },
+  { term: 'Vaca', def: 'Conjunto de juegos (al mejor de 3, de 5…).', tags: ['tanteo'] },
+  { term: 'Recuento', def: 'Al final de la mano se cuentan los tantos en orden: grande, chica, pares y juego.', tags: ['tanteo'] },
+  { term: 'Seña', def: 'Gesto para decirle al compañero lo que llevas. Solo las reglamentadas y sin mentir.', tags: ['senas'] },
+  { term: 'Mus corrido', def: 'Primera ronda de mus sin señas, en algunas mesas.', tags: ['basico'] },
+  { term: 'Farol', def: 'Envidar sin tener buenas cartas para que el rival no quiera.', tags: ['envites'] },
+  { term: 'Tener voz', def: 'Poder hablar en un lance. En pares y juego, solo los que tienen la jugada.', tags: ['envites'] },
+  { term: 'Bai / Ez', eu: 'bai / ez', def: '"Sí" y "no", al declarar si se tienen pares o juego.', tags: ['euskera'] },
+  { term: 'Errege', eu: 'errege', def: 'Rey.', tags: ['euskera'] },
+  { term: 'Zaldi', eu: 'zaldi', def: 'Caballo.', tags: ['euskera'] },
+  { term: 'Gehiago', eu: 'gehiago', def: '"Más": "bost gehiago", cinco más.', tags: ['euskera', 'envites'] },
+  { term: 'Bi', eu: 'bi', def: '"Dos": envidar dos.', tags: ['euskera', 'envites'] },
+  { term: 'Bost', eu: 'bost', def: '"Cinco": "bost gehiago", cinco más.', tags: ['euskera', 'envites'] },
+  { term: 'Txapeldun', eu: 'txapeldun', def: 'Campeón (el que gana la txapela). Hay campeonatos de mus con este nombre.', tags: ['euskera'] },
+  { term: 'Mus a 8 reyes', def: 'Variante habitual: treses = reyes y doses = ases.', tags: ['basico'] },
+  { term: 'Mus a 4 reyes', def: 'Variante en la que treses y doses valen su número.', tags: ['basico'] },
+];
