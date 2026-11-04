@@ -5,8 +5,9 @@ import type { Step } from '../content/units';
 import { CardRow } from '../ui/Card';
 import { Face } from '../ui/Face';
 import { Rich } from '../ui/Rich';
-import { ExerciseView } from '../ui/ExerciseView';
-import { parseHand, randomSeed } from '../engine';
+import { ExerciseView, HandsView } from '../ui/ExerciseView';
+import { SEAT_NAMES } from '../exercises/generators';
+import { parseHand, randomSeed, type Seat } from '../engine';
 import { useStore } from '../state/store';
 import { sfx } from '../audio';
 
@@ -39,6 +40,13 @@ function TeachCard({ step, onNext }: { step: Extract<Step, { t: 'teach' }>; onNe
             <Rich text={step.body} />
           </div>
         </div>
+        {step.table && (
+          <HandsView
+            variant={step.variant ?? '8reyes'}
+            hint={progress.settings.hints}
+            hands={step.table.map((h, i) => ({ seat: i as Seat, name: SEAT_NAMES[i], cards: parseHand(h), mano: step.mano === i }))}
+          />
+        )}
         {step.cards && (
           <CardRow cards={parseHand(step.cards)} width={parseHand(step.cards).length > 4 ? 56 : 74} hint={step.hint && progress.settings.hints} variant={step.variant ?? '8reyes'} />
         )}

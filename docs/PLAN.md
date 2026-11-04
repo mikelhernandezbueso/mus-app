@@ -76,7 +76,7 @@ Opción múltiple (teoría) · ¿Quién gana el lance? · Toca las cartas de los
 - [x] README.md, INFORME.md
 
 ## Siguientes mejoras
-- [ ] Mano guiada interactiva en la unidad 12
+- [x] Mano guiada en la unidad 12
 - [ ] Bots que modelen faroles del rival
 - [ ] Animaciones de fichas y reparto en la mesa
 - [ ] Estadísticas por lance

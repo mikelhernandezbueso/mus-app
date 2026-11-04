@@ -19,12 +19,12 @@
 Una PWA (Vite + React + TypeScript) para aprender mus desde cero, estilo Duolingo, en castellano y con vocabulario en euskera.
 
 - **Motor** (`src/engine`, TS puro): baraja, valores a 8 y 4 reyes, grande, chica, pares (pareja/medias/duples, 4 iguales = duples), juego (orden 31, 32, 40, 37…33), 31 real opcional, punto, desempates por la mano, máquina de estados de la mano (mus, descartes con rebarajado, lances con voz solo para quien tiene la jugada, envites, subidas, órdago, dejes inmediatos), recuento en orden con victoria al llegar primero, partida con juegos y vacas, señas que corresponden a cada mano.
-- **Tests**: 294 casos con Vitest (motor, bots, generadores, y una batería que comprueba con el motor los ejemplos escritos en las lecciones y en el reglamento).
+- **Tests**: 295 casos con Vitest (motor, bots, generadores, y una batería que comprueba con el motor los ejemplos escritos en las lecciones y en el reglamento).
 - **Bots** (`src/ai`): 3 niveles. Deciden mus/corte y descartes con heurísticas de jugador real, y los envites con una estimación **Monte Carlo** que solo usa lo que ese jugador sabe (sus cartas, lo declarado en pares/juego y las señas vistas). Tienen en cuenta el marcador para el órdago. En la simulación el experto gana a principiantes la mayoría de las partidas.
 - **Tutor**: en cada decisión sugiere la jugada (razonando como el bot experto, sin ver cartas ajenas) y explica por qué con la probabilidad estimada; al final de la mano lista lo que hiciste bien y mal.
 - **Señas en partida**: tu compañera (Maite) te hace su seña al cortar el mus (cara animada) y tú puedes hacerle la tuya; no deja hacer señas falsas. Puedes "pillar" señas de los rivales y ellos las tuyas (probabilidad según el nivel).
 - **Generador de ejercicios** (`src/exercises`): 30 generadores con respuesta calculada por el motor: ¿quién gana cada lance? (2 o 4 manos, con empates), tipo de pares, tocar las cartas de los pares, sumar el juego, ¿juego o punto?, ordenar manos, qué descartar, decidir el envite (solo situaciones claras según la probabilidad), reconocer señas (cara SVG animada), qué seña harías, relacionar términos, cuánto se cobra (dejes, pares, juego), recuento completo, quién llega a 40, órdagos, amarracos y manos de examen de 6 preguntas.
-- **Temario**: 17 unidades y 43 lecciones (las 17 pedidas), con explicaciones cortas y cercanas y feedback inmediato con el porqué.
+- **Temario**: 17 unidades y 44 lecciones (las 17 pedidas, con una mano guiada paso a paso en la unidad 12), con explicaciones cortas y cercanas y feedback inmediato con el porqué.
 - **Gamificación**: XP, niveles con títulos ("Mirón de barra" → "Leyenda del txoko"), racha diaria, estrellas por lección, 20 logros, repaso de errores con repetición espaciada (Leitner: 1, 3, 7 y 16 días), sonidos sintetizados (silenciables), confeti y animaciones sutiles.
 - **Secciones**: Aprender (camino), Practicar (14 temas + mezcla + repaso), Jugar (2 contra 2, nivel elegible, tutor, partida guardada para continuar), Consultar (reglamento navegable con reglas de la casa, tabla rápida, orden de juegos, chuleta de señas, glosario castellano/euskera con buscador), Ajustes (variante, 31 real, a 30/40, juegos por vaca, sonido, ayudas visuales, tema claro/oscuro/auto, nivel de bots, tutor, reiniciar progreso).
 - **Diseño propio**: tapete verde, madera, crema; tipografías Fraunces + Nunito (autoalojadas, funcionan offline); cartas de la baraja española dibujadas en SVG desde cero (las "pintas" del marco según el palo, el rey con corona, el caballo, la sota con txapela), etiquetas "=R"/"=A" en treses y doses; onboarding de 3 pantallas; modo oscuro. Pensado para una mano en 390x844.
@@ -60,12 +60,12 @@ Una PWA (Vite + React + TypeScript) para aprender mus desde cero, estilo Duoling
 
 ## Verificación
 
-- `npm test`: 294 tests en verde. `npm run build`: sin errores de TypeScript.
+- `npm test`: 295 tests en verde. `npm run build`: sin errores de TypeScript.
 - Playwright en 390x844 (`scripts/e2e.cjs`): onboarding, dos lecciones completas, una ronda de práctica, todas las pestañas de Consultar, Ajustes, Logros y **una partida completa contra bots** hasta el final, en claro y oscuro, sin errores de consola ni scroll horizontal. `scripts/offline.cjs` comprueba el manifest y la carga sin conexión.
 
 ## Qué mejoraría después
 
-- Mano guiada interactiva paso a paso (con cartas fijas) en la unidad 12.
+- Que la mano guiada sea jugable (tú tomas las decisiones con cartas fijas).
 - Bots expertos que modelen los faroles del rival y la información de quién corta el mus.
 - Animación de reparto/recogida de cartas y fichas en la mesa; vibración háptica.
 - Más variantes regionales (mus corrido, "juego a la mano", tantos de la real distintos).

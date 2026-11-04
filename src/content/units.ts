@@ -2,7 +2,7 @@
 import type { SenaId, Variant } from '../engine';
 
 export type Step =
-  | { t: 'teach'; title: string; body: string; cards?: string; face?: SenaId; variant?: Variant; hint?: boolean }
+  | { t: 'teach'; title: string; body: string; cards?: string; face?: SenaId; variant?: Variant; hint?: boolean; table?: [string, string, string, string]; mano?: 0 | 1 | 2 | 3 }
   | { t: 'ex'; gen: string; opts?: Record<string, string | number | boolean>; n?: number; variant?: Variant; real31?: boolean };
 
 export interface Lesson {
@@ -20,6 +20,8 @@ export interface Unit {
   icon: string;
   lessons: Lesson[];
 }
+
+const TBL: [string, string, string, string] = ['R R C 7', 'A A 4 5', 'R S S 6', 'C C 7 4'];
 
 const q = (...ids: string[]): Step[] => ids.map((id) => ({ t: 'ex', gen: 'quiz', opts: { id } }));
 const ex = (gen: string, n = 1, opts?: Record<string, string | number | boolean>, variant?: Variant): Step => ({ t: 'ex', gen, n, opts, variant });
@@ -336,6 +338,19 @@ export const UNITS: Unit[] = [
           { t: 'teach', title: 'Una mano entera', body: '1. Reparto: 4 cartas a cada uno.\n2. **Mus**: se pide o se corta; descartes.\n3. **Grande**, **chica**, **pares** (declarando sí/no) y **juego** o **punto**, con sus envites.\n4. **Recuento** en orden.\n\nVamos a analizar unas cuantas manos.' },
           ex('examHand', 1),
           ex('recuentoPaso', 1),
+        ],
+      },
+      {
+        id: 'u12g', title: 'Mano guiada',
+        steps: [
+          { t: 'teach', title: 'Las cartas', body: 'Tú eres **mano**. Tú y Maite contra Iker y Jon. Mira bien las cuatro manos: vamos lance a lance.', table: TBL, mano: 0 },
+          { t: 'teach', title: '1. Mus', body: 'Tienes dos reyes, un caballo y juego (37). Es una mano decente: dices **"no hay mus"** y se corta. Ya no se cambian cartas.', table: TBL, mano: 0 },
+          { t: 'teach', title: '2. Grande', body: 'Envidas 2 con tus dos reyes. Iker y Jon **no quieren** los dos: cobráis **1 tanto (el deje)** en el momento.', table: TBL, mano: 0 },
+          { t: 'teach', title: '3. Chica', body: 'Todos pasan. Gana la chica **Iker** (A A 4 5, lo más bajo): en paso vale **1 tanto**, que se cuenta al final.', table: TBL, mano: 0 },
+          { t: 'teach', title: '4. Pares', body: 'Los cuatro dicen **"pares sí"**. Se envidan 2 y se quieren. Tu pareja de reyes es la mejor, así que cobráis: **2** (envite) + **1** (tu pareja) + **1** (la pareja de sotas de Maite) = **4**.', table: TBL, mano: 0 },
+          { t: 'teach', title: '5. Juego', body: 'Tienen juego tú (37), Maite (36) y Jon (31). Todos pasan: gana **la 31 de Jon**, que vale **3**. Iker no tiene juego y no habla.', table: TBL, mano: 0 },
+          { t: 'teach', title: '6. Recuento', body: 'En orden: grande, deje ya cobrado (**+1 vosotros**); chica **+1 ellos**; pares **+4 vosotros**; juego **+3 ellos**.\n\nResultado de la mano: **5 a 4** para vosotros.', table: TBL, mano: 0 },
+          { t: 'ex', gen: 'quiz', opts: { id: 'recuentoorden' } },
         ],
       },
       {
