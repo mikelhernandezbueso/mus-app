@@ -245,7 +245,10 @@ export default function Play() {
             <button className="btn btn--gold btn--block" onClick={() => start(true)}>▶ Continuar partida ({saved.game.scores[0]}-{saved.game.scores[1]})</button>
           )}
           <button className="btn btn--block" onClick={() => start(false)}>Nueva partida</button>
-          <p className="small muted center">Consejo: las reglas y variantes se cambian en Ajustes.</p>
+          {Object.keys(progress.lessons).length < 30 && (
+            <div className="house">💡 Aún estás aprendiendo: deja el <b>modo tutor</b> activado y el nivel <b>Fácil</b>. El tutor te dirá qué haría un experto en cada jugada y por qué.</div>
+          )}
+          <p className="small muted center">Las reglas y variantes se cambian en Ajustes.</p>
         </div>
       </div>
     );
@@ -366,16 +369,16 @@ export default function Play() {
   return (
     <div className="table-screen">
       <div className="table-top">
-        <button className="icon-btn" aria-label="Salir de la partida" onClick={() => go('aprender')} style={{ color: '#fff' }}>✕</button>
-        <button className="icon-btn" aria-label="Historial de la mano" onClick={() => setShowLog(true)} style={{ color: '#fff', fontSize: '1.15rem' }}>📜</button>
+        <button className="icon-btn" aria-label="Salir de la partida" onClick={() => go('aprender')} style={{ color: '#fff', minWidth: 36, padding: 4 }}>✕</button>
+        <button className="icon-btn" aria-label="Historial de la mano" onClick={() => setShowLog(true)} style={{ color: '#fff', fontSize: '1.1rem', minWidth: 36, padding: 4 }}>📜</button>
         <div className="score">
           <Score label="Nosotros" tantos={h.scores[0]} juegos={game.juegos[0]} us />
           <Score label="Ellos" tantos={h.scores[1]} juegos={game.juegos[1]} us={false} />
         </div>
         {h.phase === 'apuestas' && !senas.humanDone ? (
-          <button className="btn btn--gold btn--sm" style={{ minWidth: 52, padding: '6px 8px' }} aria-label="Hacer seña a Maite" onClick={() => setSenaSheet(true)}>😉<span className="small">seña</span></button>
+          <button className="btn btn--gold btn--sm" style={{ minWidth: 46, padding: '4px 6px', flexDirection: 'column', gap: 0, lineHeight: 1 }} aria-label="Hacer seña a Maite" onClick={() => setSenaSheet(true)}>😉<span style={{ fontSize: '0.62rem' }}>seña</span></button>
         ) : (
-          <div className="small" style={{ fontWeight: 900, width: 52, textAlign: 'center' }}>a {h.rules.target}</div>
+          <div className="small" style={{ fontWeight: 900, width: 46, textAlign: 'center' }}>a {h.rules.target}</div>
         )}
       </div>
 

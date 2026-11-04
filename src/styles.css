@@ -250,9 +250,9 @@ a { color: var(--felt-text); }
 /* ---------- mesa de juego ---------- */
 .table-screen { min-height: 100dvh; display: flex; flex-direction: column; background: radial-gradient(ellipse at 50% 45%, #2a7a4e 0%, var(--felt) 45%, var(--felt2) 100%); color: var(--felt-ink); position: relative; }
 .table-screen::before { content: ''; position: absolute; inset: 0; background: repeating-radial-gradient(circle at 50% 50%, rgba(255,255,255,.025) 0 1px, transparent 1px 4px); pointer-events: none; }
-.table-top { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: linear-gradient(#5b3518, #7a4a22); box-shadow: 0 3px 0 #3a2210; position: relative; z-index: 2; }
+.table-top { display: flex; align-items: center; gap: 4px; padding: 8px 8px; background: linear-gradient(#5b3518, #7a4a22); box-shadow: 0 3px 0 #3a2210; position: relative; z-index: 2; }
 .score { display: flex; gap: 6px; flex: 1; justify-content: center; }
-.score-team { background: rgba(0,0,0,.25); border-radius: 12px; padding: 4px 10px; text-align: center; min-width: 98px; }
+.score-team { background: rgba(0,0,0,.25); border-radius: 12px; padding: 4px 8px; text-align: center; min-width: 82px; }
 .score-team b { font-family: var(--display); font-size: 1.4rem; line-height: 1; }
 .score-team small { display: block; font-size: 0.68rem; font-weight: 800; opacity: 0.85; text-transform: uppercase; letter-spacing: .05em; }
 .score-team--us b { color: #ffe7a8; }
@@ -268,6 +268,7 @@ a { color: var(--felt-text); }
 .seat--right { grid-column: 3; grid-row: 2; justify-content: center; }
 .seat-name { font-weight: 900; font-size: 0.8rem; background: rgba(0,0,0,.3); padding: 2px 8px; border-radius: 999px; white-space: nowrap; display: flex; gap: 4px; align-items: center; }
 .seat-name .mano-badge { margin: 0; }
+.seat--left .seat-name, .seat--right .seat-name { flex-direction: column; gap: 1px; padding: 3px 8px; border-radius: 12px; }
 .seat--turn .seat-name { background: var(--gold); color: #3a2604; animation: pulse 1s ease-in-out infinite; }
 @keyframes pulse { 50% { box-shadow: 0 0 0 5px rgba(224,169,44,.35); } }
 .mini-cards { display: flex; }
