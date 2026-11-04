@@ -268,7 +268,7 @@ export const UNITS: Unit[] = [
       {
         id: 'u9l3', title: 'Qué se cobra',
         steps: [
-          { t: 'teach', title: 'La tabla de cobros', body: '• **En paso**: grande, chica y punto, 1 tanto; pares y juego, sus jugadas.\n• **Querido**: lo envidado (+ jugadas en pares y juego; + 1 en el punto).\n• **No querido**: el deje (1, o lo envidado antes de la última subida), en el momento. En pares y juego, además, el que envidó cobra sus jugadas al final.' },
+          { t: 'teach', title: 'La tabla de cobros', body: '• **En paso**: grande, chica y punto, 1 tanto; pares y juego, sus jugadas.\n• **Querido**: lo envidado (+ jugadas en pares y juego; + 1 en el punto).\n• **No querido**: el deje (1, o lo envidado antes de la última subida), en el momento. En pares y juego, además, el que envidó cobra sus jugadas al final (y en el punto, el tanto del punto).' },
           ...q('enpasopares', 'noquieropares'),
           ex('cobroDeje', 3),
           ex('cobroLance', 2),

@@ -431,7 +431,9 @@ const betDecision: Gen = (rng, rules, opts, spec) => {
       lance === 'pares' || lance === 'juego'
         ? ' ' + ([1, 2, 3] as Seat[]).map((s) => `${SEAT_NAMES[s]}: ${declared[lance][s] ? 'sí' : 'no'}`).join(', ') + '.'
         : '';
-    const situation = respond ? `Iker envida 2 a ${LANCE_NAMES[lance]}.` : `Te toca hablar a ${LANCE_NAMES[lance]}.`;
+    const rivals = ([1, 3] as Seat[]).filter((x) => (lance === 'pares' || lance === 'juego' ? declared[lance][x] : true));
+    const bettor = rivals[randInt(rng, rivals.length)];
+    const situation = respond ? `${SEAT_NAMES[bettor]} envida 2 a ${LANCE_NAMES[lance]}.` : `Te toca hablar a ${LANCE_NAMES[lance]}.`;
     return {
       kind: 'choice', spec, rules, lance, hint: true,
       hands: [{ seat: 0, name: 'Tú', cards: sortHand(hands[0], rules), mano: mano === 0, note: mano === 0 ? 'eres mano' : `mano: ${SEAT_NAMES[mano]}` }],

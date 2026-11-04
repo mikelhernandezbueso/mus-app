@@ -370,7 +370,11 @@ export default function Play() {
           <Score label="Nosotros" tantos={h.scores[0]} juegos={game.juegos[0]} us />
           <Score label="Ellos" tantos={h.scores[1]} juegos={game.juegos[1]} us={false} />
         </div>
-        <div className="small" style={{ fontWeight: 900, width: 44, textAlign: 'center' }}>a {h.rules.target}</div>
+        {h.phase === 'apuestas' && !senas.humanDone ? (
+          <button className="btn btn--gold btn--sm" style={{ minWidth: 52, padding: '6px 8px' }} aria-label="Hacer seña a Maite" onClick={() => setSenaSheet(true)}>😉<span className="small">seña</span></button>
+        ) : (
+          <div className="small" style={{ fontWeight: 900, width: 52, textAlign: 'center' }}>a {h.rules.target}</div>
+        )}
       </div>
 
       <div className="felt">
@@ -456,9 +460,6 @@ export default function Play() {
             {!h.bet!.ordago && <button className="btn btn--gold" onClick={() => act({ type: 'envido', amount: 2 })}>+2</button>}
             {!h.bet!.ordago && <button className="btn btn--red" onClick={() => act({ type: 'ordago' })}>Órdago</button>}
           </div>
-        )}
-        {h.phase === 'apuestas' && !senas.humanDone && (
-          <button className="btn btn--wood btn--sm" onClick={() => setSenaSheet(true)}>😉 Hacer seña a Maite</button>
         )}
       </div>
 

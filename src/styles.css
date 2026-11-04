@@ -287,9 +287,9 @@ a { color: var(--felt); }
 .me { grid-column: 1 / 4; grid-row: 3; display: flex; flex-direction: column; align-items: center; gap: 6px; padding-bottom: 4px; }
 .my-cards { display: flex; gap: 6px; justify-content: center; padding-top: 16px; }
 .actions { background: linear-gradient(#5b3518, #6e4220); padding: 10px 10px calc(10px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 8px; position: relative; z-index: 2; box-shadow: 0 -3px 0 #3a2210; }
-.actions .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
+.actions .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(76px, 1fr)); gap: 8px; }
 .actions .btn { min-height: 50px; font-size: 1rem; padding: 10px; }
-.tutor { background: #fff6d8; color: #3a2a0a; border-radius: 14px; padding: 10px 12px; font-size: 0.92rem; line-height: 1.35; border: 2px solid #e8c66a; display: flex; gap: 8px; }
+.tutor { background: #fff6d8; color: #3a2a0a; border-radius: 14px; padding: 8px 10px; font-size: 0.88rem; line-height: 1.35; border: 2px solid #e8c66a; display: flex; gap: 8px; }
 .tutor b { color: #7a4a00; }
 .tutor .owl { font-size: 1.5rem; flex: none; }
 .sheet-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 40; animation: fadeIn .2s; }

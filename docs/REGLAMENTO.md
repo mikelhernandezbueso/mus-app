@@ -148,7 +148,7 @@ Desarrollo de un lance:
 - **Los dejes se apuntan en el momento** [4][21]. El resto se cuenta al final de la mano, levantando las cartas, **en el orden de los lances**: grande, chica, pares, juego/punto [4][22][24].
 - **Gana el juego la primera pareja que llega a 40**, contando en ese orden; si con el recuento llegan las dos, gana la que llegue antes (por eso la grande "se cuenta primero") [22][24]. Si un deje te da los 40, ganas en el acto.
 - **Órdago querido**: gana el juego la pareja que gana ese lance, se lleve como se lleve el marcador [3][16].
-- **Vaca**: conjunto de juegos. Según la zona, a 3, 5, 7 o 9 juegos [22][23][25]. 🏠 En la app la vaca es "al mejor de 3" (gana quien gane 2 juegos) y se puede elegir 1 (partida rápida, por defecto) o 5. **Partida**: conjunto de vacas que se pacte.
+- **Vaca**: conjunto de juegos. Según la zona, a 3, 5, 7 o 9 juegos [22][23][25]. 🏠 En la app se eligen los juegos necesarios para ganar la vaca: **1** (partida rápida, por defecto), **2** (al mejor de 3) o **3** (al mejor de 5). **Partida**: conjunto de vacas que se pacte.
 
 ## 8. Ejemplo de mano completa
 
@@ -206,7 +206,7 @@ El glosario completo (castellano y euskera) está en la app (Consultar → Glosa
 ## Reglas de la casa (resumen)
 
 1. Mus a **8 reyes** (configurable a 4).
-2. Juego a **40** (configurable a 30). Vaca de **1** juego por defecto (configurable a 3 o 5).
+2. Juego a **40** (configurable a 30). Vaca de **1** juego por defecto (configurable a 2 o 3 juegos ganados).
 3. **31 real desactivada** por defecto (configurable).
 4. Envite mínimo **2**; deje **1** o lo envidado antes.
 5. Basta un **"quiero"** de la pareja para aceptar.
