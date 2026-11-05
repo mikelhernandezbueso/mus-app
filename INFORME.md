@@ -44,6 +44,11 @@ A petición tuya (los rivales jugaban demasiado rápido para seguir la mano):
 - El **recuento** sale tras una pausa (o al tocar «Ver el recuento»), para que veas la última jugada.
 - Arreglado: la cara de la seña de Maite no se cerraba y empujaba los botones fuera de la pantalla.
 
+## Cuarta pasada: pantalla con notch / Dynamic Island
+
+- En el iPhone la app ocupaba también la zona de la cámara y la barra de estado y se cortaba arriba. Ahora todas las pantallas (Aprender, lecciones, mesa, bienvenida, avisos y hojas) reservan la zona segura con `env(safe-area-inset-top)` (y la inferior para la barra de gestos), y esa franja se pinta de verde oscuro para que la hora y la batería (en blanco) se lean bien.
+- Receta seguida: `viewport-fit=cover` + `apple-mobile-web-app-status-bar-style: black-translucent` + márgenes con `env(safe-area-inset-*)` (CSS-Tricks, guías de PWA en iOS).
+
 ## Decisiones tomadas
 
 - **Investigación**: no se podían descargar páginas (la red del entorno bloquea WebFetch/curl salvo npm), así que contrasté cada regla con extractos del buscador de 3 o más fuentes (Ludoteka, Las40, Mus2000, normas de Bizkaia y Txapeldunes de ASESMUS, reglamento de La Federación de Mus, Asociación Navarra, Fournier, Euskaltzaindia…). Todo está citado en `docs/REGLAMENTO.md`.

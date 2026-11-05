@@ -12,6 +12,7 @@ import App from './App';
 import { StoreProvider } from './state/store';
 
 registerSW({ immediate: true });
+if (import.meta.env.MODE === 'artifact') document.documentElement.classList.add('artifact');
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
