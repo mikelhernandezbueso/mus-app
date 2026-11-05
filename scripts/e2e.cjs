@@ -109,6 +109,7 @@ fs.mkdirSync(OUT, { recursive: true });
   // Partida completa
   await page.goto(BASE + '#/jugar');
   await shot('15-jugar-inicio');
+  await page.getByRole('button', { name: 'Rápido', exact: true }).click();
   await page.getByRole('button', { name: 'Nueva partida' }).click();
   let hands = 0;
   const t0 = Date.now();
@@ -116,6 +117,8 @@ fs.mkdirSync(OUT, { recursive: true });
   while (Date.now() - t0 < 9 * 60 * 1000) {
     await page.waitForTimeout(250);
     if (await page.getByRole('button', { name: 'Otra partida' }).count()) break;
+    const ver = page.getByRole('button', { name: 'Ver el recuento' });
+    if (await ver.count()) { await ver.click(); continue; }
     const next = page.getByRole('button', { name: /Siguiente mano|Siguiente juego|Ver resultado/ });
     if (await next.count()) {
       hands++;

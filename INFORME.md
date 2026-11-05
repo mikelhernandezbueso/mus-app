@@ -34,6 +34,16 @@ Una PWA (Vite + React + TypeScript) para aprender mus desde cero, estilo Duoling
 - Varios detalles: el ejercicio de relacionar baraja de verdad, la hoja de corrección ya no tapa el ejercicio, vibración al fallar (Android), colores del modo oscuro automático, cabecera de la mesa que no se corta en 390 px, consejo de usar el tutor al empezar a jugar.
 - Generador de ejercicios de envite 8 veces más rápido (para que no haya esperas en el móvil).
 
+## Tercera pasada: ritmo de la partida
+
+A petición tuya (los rivales jugaban demasiado rápido para seguir la mano):
+- **Ritmo configurable** en la pantalla de Jugar y en Ajustes: **Paso a paso** (los rivales esperan a que toques «Siguiente jugada»), **Lento** (por defecto: unos 2,4 s por jugada de cada bot), Normal y Rápido.
+- **Pausa tras cada lance** con el resultado destacado en el tapete (p. ej. «Chica: no quiero. Cobráis 1.»).
+- **Últimas jugadas del lance** en el centro de la mesa, y botón **Pausar / Seguir**.
+- Con el tutor activado, **lectura de cada jugada rival** («Jon envida a la grande: suele llevar reyes»).
+- El **recuento** sale tras una pausa (o al tocar «Ver el recuento»), para que veas la última jugada.
+- Arreglado: la cara de la seña de Maite no se cerraba y empujaba los botones fuera de la pantalla.
+
 ## Decisiones tomadas
 
 - **Investigación**: no se podían descargar páginas (la red del entorno bloquea WebFetch/curl salvo npm), así que contrasté cada regla con extractos del buscador de 3 o más fuentes (Ludoteka, Las40, Mus2000, normas de Bizkaia y Txapeldunes de ASESMUS, reglamento de La Federación de Mus, Asociación Navarra, Fournier, Euskaltzaindia…). Todo está citado en `docs/REGLAMENTO.md`.

@@ -3,6 +3,8 @@ import { DEFAULT_RULES, type Rules } from '../engine';
 import type { ExerciseSpec } from '../exercises/types';
 
 export type BotLevel = 'principiante' | 'normal' | 'experto';
+/** Ritmo de la partida: con qué calma juegan los bots. */
+export type Pace = 'paso' | 'pausado' | 'normal' | 'rapido';
 
 export interface Settings {
   variant: Rules['variant'];
@@ -17,6 +19,8 @@ export interface Settings {
   hints: boolean;
   /** Objetivo diario de XP. */
   dailyGoal: 10 | 20 | 30 | 50;
+  /** Ritmo de los bots en la mesa. */
+  pace: Pace;
 }
 
 export interface ReviewItem {
@@ -62,6 +66,7 @@ export const DEFAULT_SETTINGS: Settings = {
   tutor: true,
   hints: true,
   dailyGoal: 20,
+  pace: 'pausado',
 };
 
 export const initialProgress = (): Progress => ({

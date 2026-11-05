@@ -69,6 +69,10 @@ export function Settings() {
           <Seg value={s.botLevel} options={[{ v: 'principiante', label: 'Fácil' }, { v: 'normal', label: 'Normal' }, { v: 'experto', label: 'Experto' }]} onChange={(v) => set('botLevel', v)} />
         </div>
         <div className="setting">
+          <div className="lbl">Ritmo de la partida<small>Paso a paso: los bots esperan a que toques «Siguiente jugada».</small></div>
+          <Seg value={s.pace} options={[{ v: 'paso', label: 'Paso' }, { v: 'pausado', label: 'Lento' }, { v: 'normal', label: 'Normal' }, { v: 'rapido', label: 'Rápido' }]} onChange={(v) => set('pace', v)} />
+        </div>
+        <div className="setting">
           <div className="lbl">Modo tutor<small>Te sugiere la jugada y te explica por qué.</small></div>
           <Switch on={s.tutor} onChange={(v) => set('tutor', v)} label="Modo tutor" />
         </div>

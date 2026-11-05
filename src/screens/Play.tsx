@@ -7,7 +7,7 @@ import {
 import { decide, type Level } from '../ai/bot';
 import { reviewHand, suggest, actionLabel, type TutorRecord } from '../ai/tutor';
 import { useStore } from '../state/store';
-import { addXp } from '../state/progress';
+import { addXp, type Pace } from '../state/progress';
 import { go } from '../router';
 import { CardView } from '../ui/Card';
 import { Face } from '../ui/Face';
@@ -17,6 +17,15 @@ import { Confetti } from '../ui/Chrome';
 
 const NAMES = ['Tú', 'Iker', 'Maite', 'Jon'];
 const SAVE_KEY = 'mus-eskola-partida';
+
+/** Tiempos (ms) de cada ritmo: lo que tarda un bot en hablar, la pausa tras cada lance y antes del recuento. */
+const PACE: Record<Pace, { mus: number; desc: number; bet: number; lanceEnd: number; end: number }> = {
+  paso: { mus: 0, desc: 0, bet: 0, lanceEnd: 0, end: 1500 },
+  pausado: { mus: 1700, desc: 1500, bet: 2400, lanceEnd: 2200, end: 2200 },
+  normal: { mus: 1000, desc: 900, bet: 1400, lanceEnd: 1200, end: 1300 },
+  rapido: { mus: 450, desc: 400, bet: 650, lanceEnd: 500, end: 600 },
+};
+const PACE_LABEL: Record<Pace, string> = { paso: 'Paso a paso', pausado: 'Lento', normal: 'Normal', rapido: 'Rápido' };
 const CATCH: Record<Level, number> = { principiante: 0.6, normal: 0.35, experto: 0.15 };
 const BOT_CATCH: Record<Level, number> = { principiante: 0.1, normal: 0.25, experto: 0.4 };
 
@@ -105,6 +114,11 @@ export default function Play() {
   const [senaMsg, setSenaMsg] = useState<string | null>(null);
   const [showLog, setShowLog] = useState(false);
   const [revealMeaning, setRevealMeaning] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [endShown, setEndShown] = useState(false);
+  const pace: Pace = progress.settings.pace ?? 'pausado';
+  const setPace = (v: Pace) => update((p) => ({ ...p, settings: { ...p.settings, pace: v } }));
+  const lanceEndsRef = useRef(0);
   const rngRef = useRef(makeRng(randomSeed()));
 
   const hand = game?.hand;
@@ -132,7 +146,7 @@ export default function Play() {
   };
 
   // Señas al cortar el mus
-  const cutDone = hand && hand.phase !== 'mus' && hand.phase !== 'descarte' && hand.declared;
+  const cutDone = !!hand && hand.phase !== 'mus' && hand.phase !== 'descarte' && !!hand.declared;
   useEffect(() => {
     if (!hand || !cutDone || senas.made[1] !== undefined) return;
     const made: SenaState['made'] = {};
@@ -145,22 +159,41 @@ export default function Play() {
     setSenas({ made, known, caught, humanDone: false });
     setShowPartner(true);
     setRevealMeaning(false);
-    const t = setTimeout(() => setShowPartner(false), 4500);
-    return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cutDone, hand?.seed]);
-
-  // Turno de los bots
+  // La cara de la seña se ve unos segundos (más si el ritmo es lento) y se puede volver a abrir.
   useEffect(() => {
+    if (!showPartner) return;
+    const t = setTimeout(() => setShowPartner(false), pace === 'rapido' ? 3500 : 6000);
+    return () => clearTimeout(t);
+  }, [showPartner, pace]);
+
+  // Turno de los bots: con calma, para que se pueda seguir la mano.
+  const botStep = () => {
     if (!game || !hand || hand.phase === 'terminada' || actor === null || actor === 0) return;
-    const delay = hand.phase === 'mus' ? 650 : hand.phase === 'descarte' ? 500 : 950;
-    const t = setTimeout(() => {
-      const d = decide(hand, actor, { level, senas: senas.known[actor], scores: hand.scores, rng: rngRef.current });
-      act(d.action);
-    }, delay);
+    const d = decide(hand, actor, { level, senas: senas.known[actor], scores: hand.scores, rng: rngRef.current });
+    act(d.action);
+  };
+  useEffect(() => {
+    if (!game || !hand) return;
+    const ends = hand.log.filter((e) => e.kind === 'lanceEnd').length;
+    const justEnded = ends > lanceEndsRef.current;
+    lanceEndsRef.current = ends;
+    if (hand.phase === 'terminada' || actor === null || actor === 0 || paused || pace === 'paso') return;
+    const t0 = PACE[pace];
+    const delay = (hand.phase === 'mus' ? t0.mus : hand.phase === 'descarte' ? t0.desc : t0.bet) + (justEnded ? t0.lanceEnd : 0);
+    const t = setTimeout(botStep, delay);
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [game, actor]);
+  }, [game, actor, paused, pace]);
+
+  // El recuento sale tras una pausa, para ver la última jugada.
+  useEffect(() => {
+    if (!hand || hand.phase !== 'terminada') { setEndShown(false); return; }
+    const t = setTimeout(() => setEndShown(true), PACE[pace].end);
+    return () => clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [hand?.phase, game?.handNo]);
 
   const suggestion = useMemo(() => {
     if (!tutor || !hand || actor !== 0 || hand.phase === 'terminada') return null;
@@ -235,6 +268,17 @@ export default function Play() {
               ))}
             </div>
           </div>
+          <div>
+            <b>Ritmo de la partida</b>
+            <div className="small muted">En «Paso a paso» los rivales esperan a que toques «Siguiente jugada».</div>
+            <div className="seg2" style={{ marginTop: 8, width: '100%' }}>
+              {(['paso', 'pausado', 'normal', 'rapido'] as Pace[]).map((v) => (
+                <button key={v} className={pace === v ? 'on' : ''} style={{ flex: 1, padding: '8px 4px' }} onClick={() => setPace(v)}>
+                  {PACE_LABEL[v]}
+                </button>
+              ))}
+            </div>
+          </div>
           <div className="row" style={{ justifyContent: 'space-between' }}>
             <div><b>Modo tutor</b><div className="small muted">Te sugiere cada jugada y te explica por qué.</div></div>
             <button className={`switch ${tutor ? 'on' : ''}`} role="switch" aria-checked={tutor} aria-label="Modo tutor" onClick={() => setTutor(!tutor)} />
@@ -282,6 +326,8 @@ export default function Play() {
   // ------------------------------------------------------------ mesa
   const lastEvents: Partial<Record<Seat, HandEvent>> = {};
   let status = '';
+  let result = '';
+  let recent: string[] = [];
   {
     // eventos desde el último inicio de lance o de ronda de mus
     let start = 0;
@@ -307,11 +353,22 @@ export default function Play() {
     else if (h.bet) {
       const who = `Hablan ${h.bet.participants.map((x) => NAMES[x]).join(', ')}`;
       if (h.bet.total || h.bet.ordago) status = `${h.bet.ordago ? '¡Órdago' : `${h.bet.total} envidados`} a ${LANCE_TITLE[h.bet.lance].toLowerCase()}${h.bet.ordago ? '!' : ''}`;
-      else if (!betSpoken && prevEnd) status = `${outcomeText(prevEnd)} ${skipped.length && skipped.at(-1) !== prevEnd ? outcomeText(skipped.at(-1) as Extract<HandEvent, { kind: 'lanceEnd' }>) : ''} Ahora ${LANCE_TITLE[h.bet.lance].toLowerCase()}.`;
-      else if (!betSpoken && h.bet.lance === 'grande') status = `Se corta el mus. ${who}.`;
+      else if (!betSpoken && h.bet.lance === 'grande') status = `Se corta el mus. Grande. ${who}.`;
       else status = `${LANCE_TITLE[h.bet.lance]}. ${who}.`;
+      if (!betSpoken && prevEnd) {
+        const extra = skipped.length && skipped.at(-1) !== prevEnd ? ` ${outcomeText(skipped.at(-1) as Extract<HandEvent, { kind: 'lanceEnd' }>)}` : '';
+        result = `${outcomeText(prevEnd)}${extra}`;
+      }
+    } else if (h.phase === 'terminada') {
+      const lastEnd = [...h.log].reverse().find((e) => e.kind === 'lanceEnd') as Extract<HandEvent, { kind: 'lanceEnd' }> | undefined;
+      status = 'Fin de la mano: se levantan las cartas…';
+      if (lastEnd) result = outcomeText(lastEnd);
     }
+    recent = since.filter((e) => e.kind !== 'lanceStart').map(logLine).filter((x): x is string => !!x).slice(-3);
   }
+  const lastSpoken = [...h.log].reverse().find((e) => ['mus', 'noMus', 'discard', 'paso', 'envido', 'ordago', 'quiero', 'noQuiero'].includes(e.kind));
+  const reading = tutor && lastSpoken && 'seat' in lastSpoken && lastSpoken.seat !== 0 ? readingFor(lastSpoken) : null;
+  const waitingBot = h.phase !== 'terminada' && actor !== null && actor !== 0;
   const currentLance: LanceId | null = h.bet?.lance ?? null;
   const lancesList: LanceId[] = ['grande', 'chica', 'pares', h.declared && !h.declared.juego.some(Boolean) ? 'punto' : 'juego'];
   const doneLances = new Set(h.results.map((r) => r.lance));
@@ -394,10 +451,16 @@ export default function Play() {
           {h.bet && h.bet.total > 0 && (
             <div className="pot"><span className="coin" /> {h.bet.ordago ? 'ÓRDAGO' : `${h.bet.total}`}</div>
           )}
+          {result && <div className="lance-result" role="status">{result}</div>}
           <div className="status-text" role="status">{status}</div>
+          {recent.length > 0 && h.phase === 'apuestas' && (
+            <div className="ticker" aria-label="Últimas jugadas">
+              {recent.map((l, i) => <div key={`${h.log.length}-${i}`} className={i === recent.length - 1 ? 'last' : ''}>{l}</div>)}
+            </div>
+          )}
           {showPartner && partnerSena && (
-            <div className="sena-face-bubble" style={{ position: 'relative' }} onClick={() => setRevealMeaning(true)}>
-              <Face sena={partnerSena[0]} size={88} />
+            <div className="sena-face-bubble sena-face-bubble--float" onClick={() => (revealMeaning || tutor ? setShowPartner(false) : setRevealMeaning(true))}>
+              <Face sena={partnerSena[0]} size={76} />
               <small>Maite te hace una seña</small>
               {(tutor || revealMeaning) ? (
                 <small style={{ color: '#1d5c3a' }}>{partnerSena.map((x) => senaById(x).name).join(' + ')}</small>
@@ -439,7 +502,28 @@ export default function Play() {
             <div><b>Tutor: {sugText}.</b> {suggestion.why}</div>
           </div>
         )}
-        {!myTurn && h.phase !== 'terminada' && <div className="center small" style={{ fontWeight: 800, opacity: 0.85 }}>Esperando a {actor !== null ? NAMES[actor] : '…'}…</div>}
+        {reading && !myTurn && (
+          <div className="tutor" role="note">
+            <span className="owl" aria-hidden>🦉</span>
+            <div><b>Lectura:</b> {reading}</div>
+          </div>
+        )}
+        {waitingBot && (
+          <div className="wait-row">
+            <div className="small grow" style={{ fontWeight: 800 }}>
+              {pace === 'paso' || paused ? `Le toca a ${NAMES[actor!]}` : <>Pensando: {NAMES[actor!]}<span className="think-dots" aria-hidden><i>.</i><i>.</i><i>.</i></span></>}
+            </div>
+            {pace !== 'paso' && (
+              <button className="btn btn--ghost btn--sm" onClick={() => setPaused(!paused)} aria-label={paused ? 'Seguir' : 'Pausar'}>{paused ? '▶ Seguir' : '❚❚ Pausar'}</button>
+            )}
+            {(pace === 'paso' || paused) && (
+              <button className="btn btn--gold btn--sm" onClick={botStep}>Siguiente jugada ›</button>
+            )}
+          </div>
+        )}
+        {h.phase === 'terminada' && !endShown && (
+          <button className="btn btn--block" onClick={() => setEndShown(true)}>Ver el recuento</button>
+        )}
         {legal === 'mus' && (
           <div className="grid">
             <button className="btn" onClick={() => act({ type: 'mus' })}>Mus</button>
@@ -512,7 +596,7 @@ export default function Play() {
         </>
       )}
 
-      {h.phase === 'terminada' && (
+      {h.phase === 'terminada' && endShown && (
         <>
           <div className="sheet-backdrop" />
           <div className="sheet" role="dialog" aria-label="Recuento">
@@ -571,6 +655,26 @@ export default function Play() {
       )}
     </div>
   );
+}
+
+/** Qué suele significar cada jugada de otro jugador (para aprender a leer la mesa). */
+function readingFor(e: HandEvent): string | null {
+  const who = 'seat' in e ? (e.seat === 2 ? 'Maite (tu compañera)' : NAMES[e.seat]) : '';
+  const L = 'lance' in e ? e.lance : null;
+  switch (e.kind) {
+    case 'mus': return `${who} pide mus: su mano no le convence y quiere cambiar.`;
+    case 'noMus': return `${who} corta el mus: quien corta suele llevar algo bueno (pares, juego o reyes).`;
+    case 'discard': return `${who} se descarta de ${e.count}: ${e.count >= 3 ? 'iba casi sin nada.' : e.count === 1 ? 'tenía la mano casi hecha.' : 'guarda algo y busca mejorar.'}`;
+    case 'paso':
+      return `${who} pasa a ${L === 'grande' ? 'la grande: no presume de reyes' : L === 'chica' ? 'la chica: no tiene muchos ases' : L === 'pares' ? 'pares: sus pares no son de los altos' : L === 'juego' ? 'juego: su juego no es de los mejores' : 'punto: su punto no es alto'} (o se lo guarda para luego).`;
+    case 'envido':
+      if (e.raise) return `${who} sube a ${e.total}: se ve muy fuerte… o va de farol.`;
+      return `${who} envida a ${L === 'grande' ? 'la grande: suele llevar reyes' : L === 'chica' ? 'la chica: suele llevar ases o cartas bajas' : L === 'pares' ? 'pares: buenos pares (medias, duples o pareja alta)' : L === 'juego' ? 'juego: buen juego, quizá la 31' : 'punto: un punto alto, cerca de 30'}.`;
+    case 'ordago': return `¡${who} echa órdago! O tiene una jugada casi segura o el marcador le obliga a arriesgar.`;
+    case 'quiero': return `${who} quiere: cree que su pareja gana este lance. Se verá en el recuento.`;
+    case 'noQuiero': return `${who} no quiere: ve más fuerte al rival y prefiere pagar solo el deje.`;
+    default: return null;
+  }
 }
 
 function logLine(e: HandEvent): string | null {
